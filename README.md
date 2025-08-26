@@ -1,4 +1,5 @@
-# Chromimum Extention Sandbox (GCP Namespace Revealer) (Translate Mode)
+# Chromimum Extention Sandbox (GCP Namespace Revealer) 
+[Translate Mode]
 
 A simple Chrome MV3 extension that replaces hashed Cloud Run IDs (`x[0-9a-f]{16}`) with their full namespaces on the GCP Console. Toggle between replacing IDs (Translate) and appending `(namespace: …)` (Annotate).
 
