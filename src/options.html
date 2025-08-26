@@ -1,30 +1,117 @@
 <!doctype html>
+<!--
+  GCP Namespace Revealer – Options Page
+  --------------------------------------
+  Purpose:
+  - Provides UI for configuring namespace mappings and behavior for the extension.
+  - Users paste namespaces (one per line). The extension hashes them into IDs.
+  - Stores both the raw list and computed map in chrome.storage.local.
+  - Allows toggling between "Translate" (replace ID with namespace) and "Annotate".
+
+  Key Elements:
+  - <textarea> for namespace input
+  - <button> Save: persists to storage
+  - <input type="checkbox"> Replace Mode toggle
+  - <pre> Preview area showing ID → Namespace mappings
+  - Scripts:
+      vendor/md5.js   – MD5 implementation (or library) for ID hashing
+      options.js      – Logic for saving/restoring settings and updating preview
+-->
+
 <html>
 <head>
   <meta charset="utf-8">
   <title>GCP Namespace Revealer – Options</title>
+
   <style>
-    body { font: 14px system-ui, sans-serif; margin: 24px; max-width: 800px; }
-    textarea { width: 100%; height: 160px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .map { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#f6f8fa; padding:12px; border-radius:8px;}
-    .row { display:flex; gap:12px; margin-top:12px; align-items:center; }
-    button { padding:8px 12px; border: none; border-radius:8px; cursor:pointer; }
-    #status { margin-left: 8px; color: #0a7; }
-    label { user-select: none; }
+    /* Global body styling: font, margins, max width */
+    body { 
+      font: 14px system-ui, sans-serif; 
+      margin: 24px; 
+      max-width: 800px; 
+    }
+
+    /* Textarea for namespace list: wide and tall enough for multiple lines */
+    textarea { 
+      width: 100%; 
+      height: 160px; 
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; 
+    }
+
+    /* Preview box: monospaced font, subtle background, rounded edges */
+    .map { 
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; 
+      background:#f6f8fa; 
+      padding:12px; 
+      border-radius:8px;
+    }
+
+    /* Row layout: save button + checkbox + status aligned horizontally */
+    .row { 
+      display:flex; 
+      gap:12px; 
+      margin-top:12px; 
+      align-items:center; 
+    }
+
+    /* Buttons: padded, rounded, clickable */
+    button { 
+      padding:8px 12px; 
+      border: none; 
+      border-radius:8px; 
+      cursor:pointer; 
+    }
+
+    /* Status span: small green text for "Saved ✓" messages */
+    #status { 
+      margin-left: 8px; 
+      color: #0a7; 
+    }
+
+    /* Labels: prevent text selection when clicking */
+    label { 
+      user-select: none; 
+    }
   </style>
 </head>
+
 <body>
+  <!-- Page header -->
   <h1>GCP Namespace Revealer</h1>
-  <p>Paste your namespaces (one per line). The extension computes IDs as <code>x + left16(md5(lower(namespace)))</code>.</p>
+
+  <!-- Instructional text: how IDs are derived -->
+  <p>
+    Paste your namespaces (one per line).
+    The extension computes IDs as 
+    <code>x + left16(md5(lower(namespace)))</code>.
+  </p>
+
+  <!-- User input area: one namespace per line -->
   <textarea id="namespaces" placeholder="One namespace per line"></textarea>
+
+  <!-- Row of controls: save button, toggle, status -->
   <div class="row">
+    <!-- Save button: writes data to chrome.storage.local -->
     <button id="save">Save</button>
-    <label><input type="checkbox" id="replaceMode"> Replace IDs with full namespace (translate)</label>
+
+    <!-- Checkbox: toggles "replace" mode -->
+    <label>
+      <input type="checkbox" id="replaceMode"> 
+      Replace IDs with full namespace (translate)
+    </label>
+
+    <!-- Status span: updated dynamically with "Saved ✓" after saving -->
     <span id="status"></span>
   </div>
+
+  <!-- Preview area: shows computed ID → Namespace mappings -->
   <h3>Preview (ID → Namespace)</h3>
   <pre class="map" id="preview"></pre>
+
+  <!-- Local MD5 implementation or library (used by options.js) -->
   <script src="vendor/md5.js"></script>
+
+  <!-- Main options page logic: load, preview, save -->
   <script src="options.js"></script>
 </body>
 </html>
